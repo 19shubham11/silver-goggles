@@ -20,7 +20,6 @@ func getEnv(key, fallback string) string {
 }
 
 func LoadAppConfig() *Config {
-
 	pwd, _ := os.Getwd()
 	file, err := os.Open(pwd + "/config/config.json")
 	if err != nil {

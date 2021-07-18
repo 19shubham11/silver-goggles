@@ -12,8 +12,7 @@ func main() {
 		Conf: appConfig,
 	}
 
-	res, _ := weatherAPI.GetCurrentWeather()
+	res, err := weatherAPI.GetCurrentWeather("Berlin")
 	fmt.Printf("%+v\n", res)
-
-	fmt.Println(res.Weather[0].Conditions)
+	fmt.Printf("%+v\n", err)
 }

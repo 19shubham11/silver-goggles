@@ -11,11 +11,16 @@ type WeatherAPI struct {
 	Conf *config.Config
 }
 
-func (w WeatherAPI) GetCurrentWeather() (*CurrentWeather, error) {
-
+func (w WeatherAPI) GetCurrentWeather(cityName string) (*CurrentWeather, error) {
 	url := w.Conf.WeatherURL
 
-	res, err := httpClient.Get(url, nil, nil)
+	queryParmas := map[string]string{
+		"q":     cityName,
+		"units": "metric",
+		"appid": w.Conf.ApiKey,
+	}
+
+	res, err := httpClient.Get(url, nil, queryParmas)
 	if err != nil {
 		return nil, err
 	}

@@ -55,7 +55,7 @@ func TestGetCurrentWeather(t *testing.T) {
 
 		mocks.GetDoFunc = mocks.MockHTTPRequest(json, 200)
 
-		resp, err := weatherAPI.GetCurrentWeather()
+		resp, err := weatherAPI.GetCurrentWeather("berlin")
 		assertSuccessfulResponse(t, resp, err, 254.35)
 	})
 
@@ -63,7 +63,7 @@ func TestGetCurrentWeather(t *testing.T) {
 		json := ""
 		mocks.GetDoFunc = mocks.MockHTTPRequest(json, 400)
 
-		resp, err := weatherAPI.GetCurrentWeather()
+		resp, err := weatherAPI.GetCurrentWeather("berlin")
 		assertErrorResponse(t, resp, err)
 	})
 }
