@@ -3,6 +3,7 @@ package weather
 import (
 	httpClient "19shubham11/weather-cli/internal/httpclient"
 	"encoding/json"
+	"errors"
 )
 
 func GetCurrentWeather() (*CurrentWeather, error) {
@@ -14,17 +15,16 @@ func GetCurrentWeather() (*CurrentWeather, error) {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-
-	// better error handling and more tests
 	if res.StatusCode == 200 {
+		defer res.Body.Close()
+
 		currentWeather := &CurrentWeather{}
 		err = json.NewDecoder(res.Body).Decode(currentWeather)
 		if err != nil {
 			return nil, err
 		}
 		return currentWeather, nil
+	} else {
+		return nil, errors.New("openweather error")
 	}
-
-	return nil, err
 }
