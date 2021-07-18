@@ -1,13 +1,24 @@
 package weather
 
 import (
+	config "19shubham11/weather-cli/config"
 	httpClient "19shubham11/weather-cli/internal/httpclient"
 	"19shubham11/weather-cli/test/mocks"
 	"testing"
 )
 
+var weatherAPI WeatherAPI
+
 func init() {
 	httpClient.Client = &mocks.MockClient{}
+
+	mockConf := &config.Config{
+		WeatherURL: "https://some-url.org",
+		ApiKey:     "hahaLoL",
+	}
+	weatherAPI = WeatherAPI{
+		Conf: mockConf,
+	}
 }
 
 func assertSuccessfulResponse(t *testing.T, resp *CurrentWeather, err error, temperature float64) {
@@ -44,7 +55,7 @@ func TestGetCurrentWeather(t *testing.T) {
 
 		mocks.GetDoFunc = mocks.MockHTTPRequest(json, 200)
 
-		resp, err := GetCurrentWeather()
+		resp, err := weatherAPI.GetCurrentWeather()
 		assertSuccessfulResponse(t, resp, err, 254.35)
 	})
 
@@ -52,7 +63,7 @@ func TestGetCurrentWeather(t *testing.T) {
 		json := ""
 		mocks.GetDoFunc = mocks.MockHTTPRequest(json, 400)
 
-		resp, err := GetCurrentWeather()
+		resp, err := weatherAPI.GetCurrentWeather()
 		assertErrorResponse(t, resp, err)
 	})
 }

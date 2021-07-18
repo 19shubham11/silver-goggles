@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-type config struct {
+type Config struct {
 	WeatherURL string
 	ApiKey     string
 }
@@ -19,7 +19,7 @@ func getEnv(key, fallback string) string {
 	return value
 }
 
-func LoadAppConfig() *config {
+func LoadAppConfig() *Config {
 
 	pwd, _ := os.Getwd()
 	file, err := os.Open(pwd + "/config/config.json")
@@ -28,7 +28,7 @@ func LoadAppConfig() *config {
 		panic("error loading app config")
 	}
 
-	appConfig := &config{}
+	appConfig := &Config{}
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(appConfig)
 	if err != nil {

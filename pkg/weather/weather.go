@@ -1,14 +1,19 @@
 package weather
 
 import (
+	config "19shubham11/weather-cli/config"
 	httpClient "19shubham11/weather-cli/internal/httpclient"
 	"encoding/json"
 	"errors"
 )
 
-func GetCurrentWeather() (*CurrentWeather, error) {
-	// move this to conf
-	url := "http://api.openweathermap.org/data/2.5/weather?q=berlin&appid=**&units=metric"
+type WeatherAPI struct {
+	Conf *config.Config
+}
+
+func (w WeatherAPI) GetCurrentWeather() (*CurrentWeather, error) {
+
+	url := w.Conf.WeatherURL
 
 	res, err := httpClient.Get(url, nil, nil)
 	if err != nil {
