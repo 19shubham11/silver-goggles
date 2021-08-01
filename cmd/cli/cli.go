@@ -5,11 +5,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 )
 
 const (
-	OptionCurrent = "current"
-	OptionWeekly  = "weekly"
+	CommandCurrentWeather = "current"
+	CommandWeeklyWeather  = "weekly"
 )
 
 var ErrorCityMissing = errors.New("city missing")
@@ -21,15 +22,17 @@ type Runner interface {
 }
 
 type WeatherCommand struct {
-	fs   *flag.FlagSet
-	city string
-	api  weather.API
+	fs     *flag.FlagSet
+	city   string
+	api    weather.API
+	output io.Writer
 }
 
-func NewWeatherCommand(commandName string, weatherAPI weather.API) *WeatherCommand {
+func NewWeatherCommand(commandName string, weatherAPI weather.API, out io.Writer) *WeatherCommand {
 	w := &WeatherCommand{
-		fs:  flag.NewFlagSet(commandName, flag.ExitOnError),
-		api: weatherAPI,
+		fs:     flag.NewFlagSet(commandName, flag.ExitOnError),
+		api:    weatherAPI,
+		output: out,
 	}
 	w.fs.StringVar(&w.city, "city", "", "name of the city")
 	return w
@@ -51,14 +54,14 @@ func (w *WeatherCommand) Name() string {
 
 func (w *WeatherCommand) Run() error {
 	switch w.fs.Name() {
-	case OptionCurrent:
+	case CommandCurrentWeather:
 		weather, err := w.api.GetCurrentWeather(w.city)
 		if err != nil {
 			fmt.Println("error!", err)
 			return err
 		}
 		fmt.Println(weather)
-	case OptionWeekly:
+	case CommandWeeklyWeather:
 		fmt.Println("Not implemented yet!")
 		// return nil
 	}

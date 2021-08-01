@@ -5,6 +5,7 @@ import (
 	weather "19shubham11/weather-cli/pkg/weather"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -13,32 +14,32 @@ func main() {
 	weatherAPI := weather.WeatherAPI{
 		Conf: appConfig,
 	}
+	var out io.Writer = os.Stdout
 
-	if err := root(os.Args[1:], weatherAPI); err != nil {
+	if err := setupCLI(os.Args[1:], weatherAPI, out); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func root(args []string, weatherAPI weather.API) error {
-
+func setupCLI(args []string, weatherAPI weather.API, out io.Writer) error {
 	if len(args) < 1 {
 		fmt.Println("--help")
 		fmt.Println("$ current -city=<cityName>")
 		fmt.Println("$ weekly -city=<cityName>")
-		return errors.New("You must pass a valid argument - `current` or `weekly`")
+		return errors.New("pass a valid option - `current` or `weekly`")
 	}
 
 	cmds := []Runner{
-		NewWeatherCommand(OptionCurrent, weatherAPI),
-		NewWeatherCommand(OptionWeekly, weatherAPI),
+		NewWeatherCommand(CommandCurrentWeather, weatherAPI, out),
+		NewWeatherCommand(CommandWeeklyWeather, weatherAPI, out),
 	}
 
-	subCommand := os.Args[1]
+	subCommand := args[0]
 
 	for _, cmd := range cmds {
 		if cmd.Name() == subCommand {
-			err := cmd.Init(os.Args[2:])
+			err := cmd.Init(args[1:])
 			if err != nil {
 				return err
 			}

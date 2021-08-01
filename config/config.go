@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path"
+	"runtime"
 )
 
 type Config struct {
@@ -20,8 +22,11 @@ func getEnv(key, fallback string) string {
 }
 
 func LoadAppConfig() *Config {
-	pwd, _ := os.Getwd()
-	file, err := os.Open(pwd + "/config/config.json")
+	// Relative on runtime DIR:
+	_, b, _, _ := runtime.Caller(0)
+	dir := path.Join(path.Dir(b))
+
+	file, err := os.Open(dir + "/config.json")
 	if err != nil {
 		fmt.Println("err", err)
 		panic("error loading app config")

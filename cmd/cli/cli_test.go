@@ -3,8 +3,6 @@ package main
 import (
 	weather "19shubham11/weather-cli/pkg/weather"
 	"flag"
-	"fmt"
-	"os"
 	"testing"
 )
 
@@ -18,18 +16,11 @@ var mockCommand WeatherCommand
 
 const CommandName = "test"
 
-func TestMain(m *testing.M) {
+func init() {
 	mockCommand = WeatherCommand{
 		fs:  flag.NewFlagSet(CommandName, flag.ExitOnError),
 		api: &mockWeather{},
 	}
-
-	var _ = func() bool {
-		testing.Init()
-		return true
-	}()
-	code := m.Run()
-	os.Exit(code)
 }
 
 func TestName(t *testing.T) {
@@ -55,7 +46,6 @@ func TestInit(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			actualErr := mockCommand.Init(tt.inp)
-			fmt.Println("actualErr", actualErr)
 			if actualErr == nil {
 				t.Errorf("Expected err %v", actualErr)
 			}
