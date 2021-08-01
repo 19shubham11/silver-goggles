@@ -4,12 +4,15 @@ import (
 	config "19shubham11/weather-cli/config"
 	httpClient "19shubham11/weather-cli/internal/httpclient"
 	"19shubham11/weather-cli/test/mocks"
+	"errors"
+	"net/http"
+	"os"
 	"testing"
 )
 
 var weatherAPI WeatherAPI
 
-func init() {
+func TestMain(m *testing.M) {
 	httpClient.Client = &mocks.MockClient{}
 
 	mockConf := &config.Config{
@@ -19,6 +22,9 @@ func init() {
 	weatherAPI = WeatherAPI{
 		Conf: mockConf,
 	}
+
+	code := m.Run()
+	os.Exit(code)
 }
 
 func assertSuccessfulResponse(t *testing.T, resp *CurrentWeather, err error, temperature float64) {
@@ -59,11 +65,26 @@ func TestGetCurrentWeather(t *testing.T) {
 		assertSuccessfulResponse(t, resp, err, 254.35)
 	})
 
-	t.Run("return proper error", func(t *testing.T) {
+	t.Run("Should return proper error", func(t *testing.T) {
 		json := ""
 		mocks.GetDoFunc = mocks.MockHTTPRequest(json, 400)
 
 		resp, err := weatherAPI.GetCurrentWeather("berlin")
 		assertErrorResponse(t, resp, err)
+	})
+
+	t.Run("Should return proper error if request returns error", func(t *testing.T) {
+		errorMessage := "boom"
+		mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
+			return nil, errors.New(errorMessage)
+		}
+
+		resp, err := weatherAPI.GetCurrentWeather("berlin")
+		if resp != nil {
+			t.Errorf("Expected nil, got %v", resp)
+		}
+		if err.Error() != errorMessage {
+			t.Errorf("Expected error %v", err)
+		}
 	})
 }
