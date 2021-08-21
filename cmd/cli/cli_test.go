@@ -2,6 +2,7 @@ package main
 
 import (
 	weather "19shubham11/weather-cli/pkg/weather"
+	"bytes"
 	"flag"
 	"testing"
 )
@@ -18,8 +19,9 @@ const CommandName = "test"
 
 func init() {
 	mockCommand = WeatherCommand{
-		fs:  flag.NewFlagSet(CommandName, flag.ExitOnError),
-		api: &mockWeather{},
+		fs:     flag.NewFlagSet(CommandName, flag.ExitOnError),
+		api:    &mockWeather{},
+		output: bytes.NewBuffer(nil),
 	}
 }
 
@@ -34,7 +36,6 @@ func TestName(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-
 	var tests = []struct {
 		name string
 		inp  []string
