@@ -23,7 +23,10 @@ func getEnv(key, fallback string) string {
 
 func LoadAppConfig() *Config {
 	// Relative on runtime DIR:
-	_, b, _, _ := runtime.Caller(0)
+	_, b, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("error resolving directory")
+	}
 	dir := path.Join(path.Dir(b))
 
 	file, err := os.Open(dir + "/config.json")

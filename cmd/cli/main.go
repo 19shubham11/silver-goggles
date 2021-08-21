@@ -46,5 +46,5 @@ func setupCLI(args []string, weatherAPI weather.API, out io.Writer) error {
 			return cmd.Run()
 		}
 	}
-	return fmt.Errorf("Unknown subcommand: %s", subCommand)
+	return fmt.Errorf("unknown subcommand: %s", subCommand)
 }

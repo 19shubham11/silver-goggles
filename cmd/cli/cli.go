@@ -41,8 +41,8 @@ func NewWeatherCommand(commandName string, weatherAPI weather.API, out io.Writer
 func (w *WeatherCommand) Init(args []string) error {
 	err := w.fs.Parse(args)
 	if w.city == "" {
-		fmt.Println("--help")
-		fmt.Println(fmt.Sprintf("$ %s -city=london", w.fs.Name()))
+		fmt.Fprintln(w.output, "--help")
+		fmt.Fprintln(w.output, fmt.Sprintf("$ %s -city=london", w.fs.Name()))
 		return ErrorCityMissing
 	}
 	return err
@@ -55,15 +55,25 @@ func (w *WeatherCommand) Name() string {
 func (w *WeatherCommand) Run() error {
 	switch w.fs.Name() {
 	case CommandCurrentWeather:
-		weather, err := w.api.GetCurrentWeather(w.city)
-		if err != nil {
-			fmt.Println("error!", err)
-			return err
-		}
-		fmt.Println(weather)
+		err := w.getCurrentWeather()
+		return err
 	case CommandWeeklyWeather:
-		fmt.Println("Not implemented yet!")
-		// return nil
+		fmt.Fprintln(w.output, "Not implemented yet!")
+		return nil
 	}
+	return nil
+}
+
+func (w *WeatherCommand) getCurrentWeather() error {
+	weather, err := w.api.GetCurrentWeather(w.city)
+	if err != nil {
+		fmt.Println("error!", err)
+		return err
+	}
+	// fmt.Printf("%+v\n", weather)
+
+	fmt.Fprintf(w.output, "Current weather for %s\n", w.city)
+	fmt.Fprintf(w.output, "Feels like %.2f°C\n", weather.Values.FeelsLike)
+	fmt.Fprintf(w.output, "Expect %s\n", weather.Weather[0].Description)
 	return nil
 }
