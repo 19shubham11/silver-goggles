@@ -49,7 +49,7 @@ func (w *WeatherCommand) Init(args []string) error {
 	err := w.fs.Parse(args)
 	if w.Name() != CommandHelp && w.city == "" {
 		fmt.Fprintln(w.output, "-help")
-		fmt.Fprintln(w.output, fmt.Sprintf("$ %s -city=london", w.fs.Name()))
+		fmt.Fprintf(w.output, "$ %s -city=london\n", w.fs.Name())
 		return ErrorCityMissing
 	}
 	return err
