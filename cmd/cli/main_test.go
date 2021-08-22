@@ -27,11 +27,11 @@ func TestIntegration(t *testing.T) {
 
 	err := setupCLI(args, weatherAPI, out)
 	if err != nil {
-		t.Errorf("Error getting weather!")
+		t.Fatal("Error getting weather!")
 	}
 
 	output := out.String()
 	if !strings.Contains(output, "Current weather for") && !strings.Contains(output, "Feels like") && !strings.Contains(output, "expect") {
-		t.Error("Formatting error!", output)
+		t.Fatal("Formatting error!", output)
 	}
 }
