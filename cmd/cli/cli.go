@@ -11,9 +11,14 @@ import (
 const (
 	CommandCurrentWeather = "current"
 	CommandWeeklyWeather  = "weekly"
+	CommandHelp           = "help"
 )
 
-var ErrorCityMissing = errors.New("city missing")
+var (
+	ErrorCityMissing      = errors.New("city missing")
+	ErrorUnknownCommand   = errors.New("unknown command")
+	ErrorInsufficientArgs = errors.New("insufficient args")
+)
 
 type Runner interface {
 	Init([]string) error
@@ -34,14 +39,16 @@ func NewWeatherCommand(commandName string, weatherAPI weather.API, out io.Writer
 		api:    weatherAPI,
 		output: out,
 	}
-	w.fs.StringVar(&w.city, "city", "", "name of the city")
+	if commandName != CommandHelp {
+		w.fs.StringVar(&w.city, "city", "", "name of the city")
+	}
 	return w
 }
 
 func (w *WeatherCommand) Init(args []string) error {
 	err := w.fs.Parse(args)
-	if w.city == "" {
-		fmt.Fprintln(w.output, "--help")
+	if w.Name() != CommandHelp && w.city == "" {
+		fmt.Fprintln(w.output, "-help")
 		fmt.Fprintln(w.output, fmt.Sprintf("$ %s -city=london", w.fs.Name()))
 		return ErrorCityMissing
 	}
@@ -53,27 +60,13 @@ func (w *WeatherCommand) Name() string {
 }
 
 func (w *WeatherCommand) Run() error {
-	switch w.fs.Name() {
+	switch w.Name() {
+	case CommandHelp:
+		return w.getHelp()
 	case CommandCurrentWeather:
-		err := w.getCurrentWeather()
-		return err
+		return w.getCurrentWeather()
 	case CommandWeeklyWeather:
-		fmt.Fprintln(w.output, "Not implemented yet!")
-		return nil
+		return w.getWeeklyWeather()
 	}
-	return nil
-}
-
-func (w *WeatherCommand) getCurrentWeather() error {
-	weather, err := w.api.GetCurrentWeather(w.city)
-	if err != nil {
-		fmt.Println("error!", err)
-		return err
-	}
-	// fmt.Printf("%+v\n", weather)
-
-	fmt.Fprintf(w.output, "Current weather for %s\n", w.city)
-	fmt.Fprintf(w.output, "Feels like %.2f°C\n", weather.Values.FeelsLike)
-	fmt.Fprintf(w.output, "Expect %s\n", weather.Weather[0].Description)
 	return nil
 }
