@@ -3,7 +3,6 @@ package main
 import (
 	config "19shubham11/weather-cli/config"
 	weather "19shubham11/weather-cli/pkg/weather"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -17,26 +16,24 @@ func main() {
 	var out io.Writer = os.Stdout
 
 	if err := setupCLI(os.Args[1:], weatherAPI, out); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		// fmt.Println(err)
+		os.Exit(0)
 	}
 }
 
 func setupCLI(args []string, weatherAPI weather.API, out io.Writer) error {
 	if len(args) < 1 {
-		fmt.Println("--help")
-		fmt.Println("$ current -city=<cityName>")
-		fmt.Println("$ weekly -city=<cityName>")
-		return errors.New("pass a valid option - `current` or `weekly`")
+		fmt.Fprintln(out, "insufficient arguments, see help ")
+		return ErrorInsufficientArgs
 	}
 
 	cmds := []Runner{
+		NewWeatherCommand(CommandHelp, nil, out),
 		NewWeatherCommand(CommandCurrentWeather, weatherAPI, out),
 		NewWeatherCommand(CommandWeeklyWeather, weatherAPI, out),
 	}
 
 	subCommand := args[0]
-
 	for _, cmd := range cmds {
 		if cmd.Name() == subCommand {
 			err := cmd.Init(args[1:])
@@ -46,5 +43,6 @@ func setupCLI(args []string, weatherAPI weather.API, out io.Writer) error {
 			return cmd.Run()
 		}
 	}
-	return fmt.Errorf("unknown subcommand: %s", subCommand)
+	fmt.Fprintf(out, "unknown subcommand: %s, check help for usage", subCommand)
+	return ErrorUnknownCommand
 }
