@@ -10,7 +10,7 @@ import (
 
 type Config struct {
 	WeatherURL string
-	ApiKey     string
+	APIKey     string
 }
 
 func getEnv(key, fallback string) string {
@@ -18,6 +18,7 @@ func getEnv(key, fallback string) string {
 	if !ok {
 		value = fallback
 	}
+
 	return value
 }
 
@@ -27,6 +28,7 @@ func LoadAppConfig() *Config {
 	if !ok {
 		panic("error resolving directory")
 	}
+
 	dir := path.Join(path.Dir(b))
 
 	file, err := os.Open(dir + "/config.json")
@@ -38,12 +40,13 @@ func LoadAppConfig() *Config {
 	appConfig := &Config{}
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(appConfig)
+
 	if err != nil {
 		panic("error decoding app config")
 	}
 
 	// assign env variables to config
-	appConfig.ApiKey = getEnv("OPENWEATHER_KEY", "testKey")
+	appConfig.APIKey = getEnv("OPENWEATHER_KEY", "testKey")
 
 	return appConfig
 }

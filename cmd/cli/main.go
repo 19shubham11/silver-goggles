@@ -10,9 +10,10 @@ import (
 
 func main() {
 	appConfig := config.LoadAppConfig()
-	weatherAPI := weather.WeatherAPI{
+	weatherAPI := weather.OpenWeatherAPI{
 		Conf: appConfig,
 	}
+
 	var out io.Writer = os.Stdout
 
 	if err := setupCLI(os.Args[1:], weatherAPI, out); err != nil {
@@ -40,9 +41,12 @@ func setupCLI(args []string, weatherAPI weather.API, out io.Writer) error {
 			if err != nil {
 				return err
 			}
+
 			return cmd.Run()
 		}
 	}
+
 	fmt.Fprintf(out, "unknown subcommand: %s, check help for usage", subCommand)
+
 	return ErrorUnknownCommand
 }

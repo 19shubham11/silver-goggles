@@ -42,16 +42,20 @@ func NewWeatherCommand(commandName string, weatherAPI weather.API, out io.Writer
 	if commandName != CommandHelp {
 		w.fs.StringVar(&w.city, "city", "", "name of the city")
 	}
+
 	return w
 }
 
 func (w *WeatherCommand) Init(args []string) error {
 	err := w.fs.Parse(args)
+
 	if w.Name() != CommandHelp && w.city == "" {
 		fmt.Fprintln(w.output, "-help")
 		fmt.Fprintf(w.output, "$ %s -city=london\n", w.fs.Name())
+
 		return ErrorCityMissing
 	}
+
 	return err
 }
 
@@ -68,5 +72,6 @@ func (w *WeatherCommand) Run() error {
 	case CommandWeeklyWeather:
 		return w.getWeeklyWeather()
 	}
+
 	return nil
 }

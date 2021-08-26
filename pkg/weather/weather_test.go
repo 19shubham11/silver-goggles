@@ -10,16 +10,13 @@ import (
 	"testing"
 )
 
-var weatherAPI WeatherAPI
+var weatherAPI OpenWeatherAPI
 
 func TestMain(m *testing.M) {
 	httpClient.Client = &mocks.MockClient{}
 
-	mockConf := &config.Config{
-		WeatherURL: "https://some-url.org",
-		ApiKey:     "hahaLoL",
-	}
-	weatherAPI = WeatherAPI{
+	mockConf := &config.Config{}
+	weatherAPI = OpenWeatherAPI{
 		Conf: mockConf,
 	}
 

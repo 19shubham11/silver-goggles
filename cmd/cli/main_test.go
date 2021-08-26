@@ -10,11 +10,11 @@ import (
 	"testing"
 )
 
-var weatherAPI weather.WeatherAPI
+var weatherAPI weather.OpenWeatherAPI
 
 func TestMain(m *testing.M) {
 	appConfig := config.LoadAppConfig()
-	weatherAPI = weather.WeatherAPI{
+	weatherAPI = weather.OpenWeatherAPI{
 		Conf: appConfig,
 	}
 	code := m.Run()
@@ -23,6 +23,7 @@ func TestMain(m *testing.M) {
 
 func assertError(t *testing.T, expected, got error) {
 	t.Helper()
+
 	if !errors.Is(got, expected) {
 		t.Fatalf("Expected error %v got %v", expected, got)
 	}
@@ -30,15 +31,14 @@ func assertError(t *testing.T, expected, got error) {
 
 func assertConsoleOutput(t *testing.T, output string, expectedStrings []string) {
 	t.Helper()
+
 	for _, str := range expectedStrings {
 		if !strings.Contains(output, str) {
 			t.Errorf("Expected output to contain %s", str)
 		}
 	}
 }
-
 func TestIntegration(t *testing.T) {
-
 	tests := []struct {
 		name            string
 		args            []string
