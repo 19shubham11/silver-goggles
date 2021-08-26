@@ -1,11 +1,12 @@
 package main
 
 import (
-	weather "19shubham11/weather-cli/pkg/weather"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
+
+	"19shubham11/weather-cli/pkg/weather"
 )
 
 const (

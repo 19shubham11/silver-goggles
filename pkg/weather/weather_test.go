@@ -1,19 +1,20 @@
 package weather
 
 import (
-	config "19shubham11/weather-cli/config"
-	httpClient "19shubham11/weather-cli/internal/httpclient"
-	"19shubham11/weather-cli/test/mocks"
 	"errors"
 	"net/http"
 	"os"
 	"testing"
+
+	"19shubham11/weather-cli/config"
+	"19shubham11/weather-cli/internal/httpclient"
+	"19shubham11/weather-cli/test/mocks"
 )
 
 var weatherAPI OpenWeatherAPI
 
 func TestMain(m *testing.M) {
-	httpClient.Client = &mocks.MockClient{}
+	httpclient.Client = &mocks.MockClient{}
 
 	mockConf := &config.Config{}
 	weatherAPI = OpenWeatherAPI{

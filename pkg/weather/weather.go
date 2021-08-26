@@ -1,11 +1,12 @@
 package weather
 
 import (
-	config "19shubham11/weather-cli/config"
-	httpClient "19shubham11/weather-cli/internal/httpclient"
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"19shubham11/weather-cli/config"
+	"19shubham11/weather-cli/internal/httpclient"
 )
 
 type OpenWeatherAPI struct {
@@ -21,7 +22,7 @@ func (w OpenWeatherAPI) GetCurrentWeather(cityName string) (*CurrentWeather, err
 		"appid": w.Conf.APIKey,
 	}
 
-	res, err := httpClient.Get(url, nil, queryParmas)
+	res, err := httpclient.Get(url, nil, queryParmas)
 	if err != nil {
 		return nil, err
 	}

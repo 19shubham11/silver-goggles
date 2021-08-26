@@ -1,11 +1,12 @@
 package main
 
 import (
-	config "19shubham11/weather-cli/config"
-	weather "19shubham11/weather-cli/pkg/weather"
 	"fmt"
 	"io"
 	"os"
+
+	"19shubham11/weather-cli/config"
+	"19shubham11/weather-cli/pkg/weather"
 )
 
 func main() {

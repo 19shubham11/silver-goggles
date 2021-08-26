@@ -1,10 +1,11 @@
 package main
 
 import (
-	weather "19shubham11/weather-cli/pkg/weather"
 	"bytes"
 	"flag"
 	"testing"
+
+	"19shubham11/weather-cli/pkg/weather"
 )
 
 type mockWeather struct{}
