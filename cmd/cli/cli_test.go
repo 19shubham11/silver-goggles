@@ -137,7 +137,7 @@ func TestRun(t *testing.T) {
 			stringOutput := buffer.String()
 
 			helpers.AssertError(t, tt.expectedErr, err)
-			helpers.AssertConsoleOutput(t, stringOutput, tt.expectedOut)
+			helpers.AssertSubstrings(t, stringOutput, tt.expectedOut)
 		})
 	}
 }

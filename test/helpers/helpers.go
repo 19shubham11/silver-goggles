@@ -14,7 +14,8 @@ func AssertError(t *testing.T, expected, got error) {
 	}
 }
 
-func AssertConsoleOutput(t *testing.T, output string, expectedStrings []string) {
+// AssertSubstrings takes in a string and an array of expected sub-strings
+func AssertSubstrings(t *testing.T, output string, expectedStrings []string) {
 	t.Helper()
 
 	for _, str := range expectedStrings {

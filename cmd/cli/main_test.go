@@ -75,7 +75,7 @@ func TestIntegration(t *testing.T) {
 			err := setupCLI(tt.args, weatherAPI, tt.out)
 			helpers.AssertError(t, tt.expectedErr, err)
 			stringOutput := tt.out.String()
-			helpers.AssertConsoleOutput(t, stringOutput, tt.expectedStrings)
+			helpers.AssertSubstrings(t, stringOutput, tt.expectedStrings)
 		})
 	}
 }
