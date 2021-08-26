@@ -5,19 +5,20 @@ import (
 	httpClient "19shubham11/weather-cli/internal/httpclient"
 	"encoding/json"
 	"errors"
+	"net/http"
 )
 
-type WeatherAPI struct {
+type OpenWeatherAPI struct {
 	Conf *config.Config
 }
 
-func (w WeatherAPI) GetCurrentWeather(cityName string) (*CurrentWeather, error) {
+func (w OpenWeatherAPI) GetCurrentWeather(cityName string) (*CurrentWeather, error) {
 	url := w.Conf.WeatherURL
 
 	queryParmas := map[string]string{
 		"q":     cityName,
 		"units": "metric",
-		"appid": w.Conf.ApiKey,
+		"appid": w.Conf.APIKey,
 	}
 
 	res, err := httpClient.Get(url, nil, queryParmas)
@@ -25,16 +26,18 @@ func (w WeatherAPI) GetCurrentWeather(cityName string) (*CurrentWeather, error) 
 		return nil, err
 	}
 
-	if res.StatusCode == 200 {
+	if res.StatusCode == http.StatusOK {
 		defer res.Body.Close()
 
 		currentWeather := &CurrentWeather{}
 		err = json.NewDecoder(res.Body).Decode(currentWeather)
+
 		if err != nil {
 			return nil, err
 		}
+
 		return currentWeather, nil
-	} else {
-		return nil, errors.New("openweather error")
 	}
+
+	return nil, errors.New("openweather error")
 }

@@ -28,6 +28,7 @@ func Get(url string, headers http.Header, queryParams map[string]string) (*http.
 	for key, element := range queryParams {
 		q.Add(key, element)
 	}
+
 	request.URL.RawQuery = q.Encode()
 
 	return Client.Do(request)
