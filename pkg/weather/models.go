@@ -1,11 +1,11 @@
 package weather
 
-type description []struct {
+type Description []struct {
 	Summary     string `json:"main"`
 	Description string `json:"description"`
 }
 
-type temp struct {
+type Temperature struct {
 	Temp      float64 `json:"temp"`
 	FeelsLike float64 `json:"feels_like"`
 	TempMin   float64 `json:"temp_min"`
@@ -15,6 +15,6 @@ type temp struct {
 }
 
 type CurrentWeather struct {
-	Weather description `json:"weather"`
-	Values  temp        `json:"main"`
+	Weather Description `json:"weather"`
+	Values  Temperature `json:"main"`
 }

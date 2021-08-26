@@ -2,13 +2,12 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"os"
-	"strings"
 	"testing"
 
-	config "19shubham11/weather-cli/config"
-	weather "19shubham11/weather-cli/pkg/weather"
+	"19shubham11/weather-cli/config"
+	"19shubham11/weather-cli/pkg/weather"
+	"19shubham11/weather-cli/test/helpers"
 )
 
 var weatherAPI weather.OpenWeatherAPI
@@ -22,23 +21,6 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func assertError(t *testing.T, expected, got error) {
-	t.Helper()
-
-	if !errors.Is(got, expected) {
-		t.Fatalf("Expected error %v got %v", expected, got)
-	}
-}
-
-func assertConsoleOutput(t *testing.T, output string, expectedStrings []string) {
-	t.Helper()
-
-	for _, str := range expectedStrings {
-		if !strings.Contains(output, str) {
-			t.Errorf("Expected output to contain %s", str)
-		}
-	}
-}
 func TestIntegration(t *testing.T) {
 	tests := []struct {
 		name            string
@@ -91,9 +73,9 @@ func TestIntegration(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			os.Args = tt.args
 			err := setupCLI(tt.args, weatherAPI, tt.out)
-			assertError(t, tt.expectedErr, err)
+			helpers.AssertError(t, tt.expectedErr, err)
 			stringOutput := tt.out.String()
-			assertConsoleOutput(t, stringOutput, tt.expectedStrings)
+			helpers.AssertConsoleOutput(t, stringOutput, tt.expectedStrings)
 		})
 	}
 }

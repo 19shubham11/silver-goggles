@@ -5,7 +5,7 @@ import "fmt"
 func (w *WeatherCommand) getCurrentWeather() error {
 	weather, err := w.api.GetCurrentWeather(w.city)
 	if err != nil {
-		fmt.Println("error!", err)
+		// fmt.Println("error!", err)
 		return err
 	}
 	// fmt.Printf("%+v\n", weather)

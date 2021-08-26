@@ -2,25 +2,32 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"flag"
 	"testing"
 
 	"19shubham11/weather-cli/pkg/weather"
+	"19shubham11/weather-cli/test/helpers"
 )
 
-type mockWeather struct{}
+type mockWeather struct {
+	mockResp weather.CurrentWeather
+	mockErr  error
+}
 
 func (m mockWeather) GetCurrentWeather(cityName string) (*weather.CurrentWeather, error) {
-	return &weather.CurrentWeather{}, nil
+	return &m.mockResp, m.mockErr
 }
 
 var mockCommand WeatherCommand
 
-const CommandName = "test"
+const testCommand = "test"
+
+var errWeatherMock = errors.New("weather error")
 
 func init() {
 	mockCommand = WeatherCommand{
-		fs:     flag.NewFlagSet(CommandName, flag.ExitOnError),
+		fs:     flag.NewFlagSet(testCommand, flag.ExitOnError),
 		api:    &mockWeather{},
 		output: bytes.NewBuffer(nil),
 	}
@@ -30,8 +37,8 @@ func TestName(t *testing.T) {
 	t.Run("should return the name of the command", func(t *testing.T) {
 		name := mockCommand.Name()
 
-		if name != CommandName {
-			t.Errorf("expected %s, got %s", CommandName, name)
+		if name != testCommand {
+			t.Errorf("expected %s, got %s", testCommand, name)
 		}
 	})
 }
@@ -51,6 +58,86 @@ func TestInit(t *testing.T) {
 			if actualErr == nil {
 				t.Errorf("Expected err %v", actualErr)
 			}
+		})
+	}
+}
+
+func TestRun(t *testing.T) {
+	tests := []struct {
+		name        string
+		command     WeatherCommand
+		expectedOut []string
+		expectedErr error
+	}{
+		{
+			"weather/current success",
+			WeatherCommand{
+				fs: flag.NewFlagSet(CommandCurrentWeather, flag.ExitOnError),
+				api: &mockWeather{
+					mockResp: weather.CurrentWeather{
+						Weather: weather.Description{
+							{
+								Summary:     "clear blue skies",
+								Description: "zzz",
+							},
+						},
+						Values: weather.Temperature{
+							Temp:      22,
+							FeelsLike: 22.5,
+						},
+					},
+					mockErr: nil,
+				},
+				city: "Berlin",
+			},
+			[]string{"Current weather for", "Feels like", "Expect"},
+			nil,
+		},
+		{
+			"weather/current error",
+			WeatherCommand{
+				fs: flag.NewFlagSet(CommandCurrentWeather, flag.ExitOnError),
+				api: &mockWeather{
+					mockResp: weather.CurrentWeather{},
+					mockErr:  errWeatherMock,
+				},
+				city: "Berlin",
+			},
+			[]string{""},
+			errWeatherMock,
+		},
+		{
+			"weather/weekly",
+			WeatherCommand{
+				fs:   flag.NewFlagSet(CommandWeeklyWeather, flag.ExitOnError),
+				api:  &mockWeather{},
+				city: "Berlin",
+			},
+			[]string{"Not implemented yet"},
+			nil,
+		},
+		{
+			"help",
+			WeatherCommand{
+				fs:   flag.NewFlagSet(CommandHelp, flag.ExitOnError),
+				api:  &mockWeather{},
+				city: "Berlin",
+			},
+			[]string{"$ current -city=Berlin", "weekly  -city=Toronto"},
+			nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			buffer := bytes.NewBuffer(nil)
+			tt.command.output = buffer
+
+			err := tt.command.Run()
+			stringOutput := buffer.String()
+
+			helpers.AssertError(t, tt.expectedErr, err)
+			helpers.AssertConsoleOutput(t, stringOutput, tt.expectedOut)
 		})
 	}
 }
