@@ -28,4 +28,4 @@ jobs:
     - name: Build
       run: go build ./cmd/cli
     - name: Test
-      run: go test ./... -cover -count=2
+      run: go test -count=2 -race ./... 

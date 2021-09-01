@@ -54,7 +54,7 @@ func assertErrorResponse(t *testing.T, resp *CurrentWeather, err error) {
 }
 
 func TestGetCurrentWeather(t *testing.T) {
-	t.Run("Should return proper response when remote server returns 200", func(t *testing.T) {
+	t.Run("returns proper response when remote server returns 200", func(t *testing.T) {
 		json := `{"weather":[{"id":801,"main":"Clear","description":"clear sky","icon":"01d"}],"main":{"temp":254.35,"feels_like":25.46,"temp_min":24.57,"temp_max":26.15,"pressure":1015,"humidity":58}}`
 
 		mocks.GetDoFunc = mocks.MockHTTPRequest(json, 200)
@@ -63,7 +63,7 @@ func TestGetCurrentWeather(t *testing.T) {
 		assertSuccessfulResponse(t, resp, err, 254.35)
 	})
 
-	t.Run("Should return proper error", func(t *testing.T) {
+	t.Run("returns proper error", func(t *testing.T) {
 		json := ""
 		mocks.GetDoFunc = mocks.MockHTTPRequest(json, 400)
 
@@ -71,7 +71,7 @@ func TestGetCurrentWeather(t *testing.T) {
 		assertErrorResponse(t, resp, err)
 	})
 
-	t.Run("Should return proper error if request returns error", func(t *testing.T) {
+	t.Run("returns proper error if request returns error", func(t *testing.T) {
 		errorMessage := "boom"
 		mocks.GetDoFunc = func(*http.Request) (*http.Response, error) {
 			return nil, errors.New(errorMessage)

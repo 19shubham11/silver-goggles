@@ -34,26 +34,23 @@ func init() {
 }
 
 func TestName(t *testing.T) {
-	t.Run("should return the name of the command", func(t *testing.T) {
-		name := mockCommand.Name()
+	name := mockCommand.Name()
 
-		if name != testCommand {
-			t.Errorf("expected %s, got %s", testCommand, name)
-		}
-	})
+	if name != testCommand {
+		t.Errorf("expected %s, got %s", testCommand, name)
+	}
 }
 
 func TestInit(t *testing.T) {
-	var tests = []struct {
-		name string
-		inp  []string
+	var tests = map[string]struct {
+		inp []string
 	}{
-		{"should return proper error when flag is not present", []string{}},
-		{"should return error if an unknown flag is set", []string{"cityName=london"}},
+		"returns proper error when flag is not present": {[]string{}},
+		"returns error if an unknown flag is set":       {[]string{"cityName=london"}},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
 			actualErr := mockCommand.Init(tt.inp)
 			if actualErr == nil {
 				t.Errorf("Expected err %v", actualErr)
@@ -63,14 +60,12 @@ func TestInit(t *testing.T) {
 }
 
 func TestRun(t *testing.T) {
-	tests := []struct {
-		name        string
+	tests := map[string]struct {
 		command     WeatherCommand
 		expectedOut []string
 		expectedErr error
 	}{
-		{
-			"weather/current success",
+		"weather/current success": {
 			WeatherCommand{
 				fs: flag.NewFlagSet(CommandCurrentWeather, flag.ExitOnError),
 				api: &mockWeather{
@@ -93,8 +88,7 @@ func TestRun(t *testing.T) {
 			[]string{"Current weather for", "Feels like", "Expect"},
 			nil,
 		},
-		{
-			"weather/current error",
+		"weather/current error": {
 			WeatherCommand{
 				fs: flag.NewFlagSet(CommandCurrentWeather, flag.ExitOnError),
 				api: &mockWeather{
@@ -106,8 +100,7 @@ func TestRun(t *testing.T) {
 			[]string{""},
 			errWeatherMock,
 		},
-		{
-			"weather/weekly",
+		"weather/weekly": {
 			WeatherCommand{
 				fs:   flag.NewFlagSet(CommandWeeklyWeather, flag.ExitOnError),
 				api:  &mockWeather{},
@@ -116,8 +109,7 @@ func TestRun(t *testing.T) {
 			[]string{"Not implemented yet"},
 			nil,
 		},
-		{
-			"help",
+		"help": {
 			WeatherCommand{
 				fs:   flag.NewFlagSet(CommandHelp, flag.ExitOnError),
 				api:  &mockWeather{},
@@ -128,8 +120,8 @@ func TestRun(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
 			buffer := bytes.NewBuffer(nil)
 			tt.command.output = buffer
 
