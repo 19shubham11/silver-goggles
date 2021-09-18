@@ -6,8 +6,8 @@ import (
 	"flag"
 	"testing"
 
-	"19shubham11/weather-cli/pkg/weather"
-	"19shubham11/weather-cli/test/helpers"
+	"19shubham11/weather-cli/cmd/pkg/weather"
+	"19shubham11/weather-cli/cmd/test/helpers"
 )
 
 type mockWeather struct {

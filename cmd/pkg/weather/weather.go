@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"19shubham11/weather-cli/config"
-	"19shubham11/weather-cli/internal/httpclient"
+	"19shubham11/weather-cli/cmd/config"
+	"19shubham11/weather-cli/cmd/internal/httpclient"
 )
 
 type OpenWeatherAPI struct {

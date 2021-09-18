@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"19shubham11/weather-cli/config"
-	"19shubham11/weather-cli/internal/httpclient"
-	"19shubham11/weather-cli/test/mocks"
+	"19shubham11/weather-cli/cmd/config"
+	"19shubham11/weather-cli/cmd/internal/httpclient"
+	"19shubham11/weather-cli/cmd/test/mocks"
 )
 
 var weatherAPI OpenWeatherAPI

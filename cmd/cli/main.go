@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 
-	"19shubham11/weather-cli/config"
-	"19shubham11/weather-cli/pkg/weather"
+	"19shubham11/weather-cli/cmd/config"
+	"19shubham11/weather-cli/cmd/pkg/weather"
 )
 
 func main() {

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"19shubham11/weather-cli/pkg/weather"
+	"19shubham11/weather-cli/cmd/pkg/weather"
 )
 
 const (
